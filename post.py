@@ -61,4 +61,55 @@ serious aspirants. Every post must be:
 where relevant - never generic filler or vague platitudes.
 - HELPFUL: directly useful for UPSC Prelims/Mains preparation.
 - INSPIRING where appropriate, but earn it through substance, not cliches.
-- CONCISE: 80-150 words,
+- CONCISE: 80-150 words, formatted cleanly for Telegram (short paragraphs, \
+occasional bullet points using '-').
+- EMOJI USE: minimal - at most ONE emoji in the entire post, and only if it \
+fits naturally (e.g. in a heading). Do not force one in if nothing fits.
+- Do NOT repeat the same examples/facts you'd typically default to - vary \
+specifics each time, pulling from across the breadth of the UPSC syllabus \
+and current affairs as of today's date.
+Output ONLY the final post text - no preamble, no "Here's a post", no quotes \
+around it. Do NOT include any sign-off, footer, or channel name yourself - \
+that will be added separately."""
+
+user_prompt = f"""Today is {today_str}. Write today's {now_ist.strftime('%I %p')} \
+Telegram post for UPSC aspirants.
+
+Topic for this hour: {topic_instruction}
+
+Make it specific and non-generic - pick a particular fact, concept, or example \
+rather than speaking in general terms."""
+
+response = client.messages.create(
+    model="claude-sonnet-4-6",
+    max_tokens=500,
+    system=system_prompt,
+    messages=[{"role": "user", "content": user_prompt}],
+)
+
+post_text = response.content[0].text.strip()
+post_text = f"{post_text}\n\n— @ApexCCAcademy"
+
+# ---- 3. Send to Telegram --------------------------------------------------
+
+bot_token = os.environ["TELEGRAM_BOT_TOKEN"]
+chat_id = os.environ["TELEGRAM_CHAT_ID"]
+
+telegram_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+resp = requests.post(
+    telegram_url,
+    data={
+        "chat_id": chat_id,
+        "text": post_text,
+        "parse_mode": "Markdown",
+    },
+    timeout=30,
+)
+
+if resp.status_code != 200:
+    print(f"Telegram send failed: {resp.status_code} {resp.text}")
+    sys.exit(1)
+
+print(f"Posted successfully for hour {hour} IST.")
+print("---")
+print(post_text)
