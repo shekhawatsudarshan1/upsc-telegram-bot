@@ -74,7 +74,8 @@ accurate and exam-focused.
 specifics each time, pulling from across the breadth of the UPSC syllabus \
 and current affairs as of today's date.
 Output ONLY the final post text - no preamble, no "Here's a post", no quotes \
-around it.
+around it. Do NOT include any sign-off, footer, or channel name yourself - \
+that will be added separately."""
 
 user_prompt = f"""Today is {today_str}. Write today's {now_ist.strftime('%I %p')} \
 Telegram post for UPSC aspirants.
