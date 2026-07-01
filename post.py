@@ -61,16 +61,20 @@ serious aspirants. Every post must be:
 where relevant - never generic filler or vague platitudes.
 - HELPFUL: directly useful for UPSC Prelims/Mains preparation.
 - INSPIRING where appropriate, but earn it through substance, not cliches.
+- LIVELY TONE: write like an energetic, encouraging mentor talking directly \
+to the aspirant - conversational, warm, a little punchy. Avoid dry textbook \
+phrasing.
 - CONCISE: 80-150 words, formatted cleanly for Telegram (short paragraphs, \
 occasional bullet points using '-').
-- EMOJI USE: minimal - at most ONE emoji in the entire post, and only if it \
-fits naturally (e.g. in a heading). Do not force one in if nothing fits.
+- EMOJI USE: lively and engaging! Use 3-6 relevant emojis throughout the \
+post - in the heading, to highlight key points, and to add energy. Make it \
+feel exciting and fun to read, not dry or textbook-like, while staying \
+accurate and exam-focused.
 - Do NOT repeat the same examples/facts you'd typically default to - vary \
 specifics each time, pulling from across the breadth of the UPSC syllabus \
 and current affairs as of today's date.
 Output ONLY the final post text - no preamble, no "Here's a post", no quotes \
-around it. Do NOT include any sign-off, footer, or channel name yourself - \
-that will be added separately."""
+around it.
 
 user_prompt = f"""Today is {today_str}. Write today's {now_ist.strftime('%I %p')} \
 Telegram post for UPSC aspirants.
