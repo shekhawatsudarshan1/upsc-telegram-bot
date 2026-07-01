@@ -38,6 +38,13 @@ SCHEDULE = {
     18: "A revision/recap style summary tying together a key theme for the day",
 }
 
+# Marks weightage for the Mains-style PYQ + probable question added to each
+# post. Hour 17 (quiz) is excluded since it's already question-format.
+MARKS = {
+    6: 10, 7: 15, 8: 10, 9: 15, 10: 15, 11: 10,
+    12: 15, 13: 10, 14: 10, 15: 15, 16: 15, 18: 10,
+}
+
 if hour not in SCHEDULE:
     if os.environ.get("FORCE_TEST") == "true":
         # Manual test run - pick a representative topic regardless of hour
@@ -49,6 +56,9 @@ if hour not in SCHEDULE:
         sys.exit(0)
 else:
     topic_instruction = SCHEDULE[hour]
+
+include_pyq = hour in MARKS
+marks = MARKS.get(hour)
 
 # ---- 2. Generate the post using Claude ----------------------------------
 
@@ -64,8 +74,8 @@ where relevant - never generic filler or vague platitudes.
 - LIVELY TONE: write like an energetic, encouraging mentor talking directly \
 to the aspirant - conversational, warm, a little punchy. Avoid dry textbook \
 phrasing.
-- CONCISE: 80-150 words, formatted cleanly for Telegram (short paragraphs, \
-occasional bullet points using '-').
+- CONCISE: keep the core explanation to 80-150 words, formatted cleanly for \
+Telegram (short paragraphs, occasional bullet points using '-').
 - EMOJI USE: lively and engaging! Use 3-6 relevant emojis throughout the \
 post - in the heading, to highlight key points, and to add energy. Make it \
 feel exciting and fun to read, not dry or textbook-like, while staying \
@@ -77,17 +87,31 @@ Output ONLY the final post text - no preamble, no "Here's a post", no quotes \
 around it. Do NOT include any sign-off, footer, or channel name yourself - \
 that will be added separately."""
 
+pyq_block = ""
+if include_pyq:
+    pyq_block = f"""
+
+After the main explanation, add exactly two more sections:
+📝 PYQ: Include one REAL UPSC Mains previous year question that is genuinely \
+on this exact theme, with the year in brackets, e.g. (UPSC Mains {{year}}). \
+Only use a question you are confident actually appeared - if unsure of the \
+exact year, phrase it as "a previous UPSC Mains question on this theme" \
+without inventing a fake year.
+🎯 Probable Question ({marks} marks): Write one well-crafted, exam-style \
+probable question worth {marks} marks on today's theme, in authentic UPSC \
+Mains phrasing (e.g. "Discuss...", "Critically examine...", "Analyse...")."""
+
 user_prompt = f"""Today is {today_str}. Write today's {now_ist.strftime('%I %p')} \
 Telegram post for UPSC aspirants.
 
 Topic for this hour: {topic_instruction}
 
 Make it specific and non-generic - pick a particular fact, concept, or example \
-rather than speaking in general terms."""
+rather than speaking in general terms.{pyq_block}"""
 
 response = client.messages.create(
     model="claude-sonnet-4-6",
-    max_tokens=500,
+    max_tokens=700,
     system=system_prompt,
     messages=[{"role": "user", "content": user_prompt}],
 )
