@@ -2,7 +2,7 @@ name: Hourly UPSC Telegram Post
 
 on:
   schedule:
-    - cron: "*/5 * * * *"   # Run every 5 minutes (TEST ONLY)
+    - cron: "*/5 * * * *"
 
   workflow_dispatch:
     inputs:
@@ -10,8 +10,7 @@ on:
         description: "Force a test post even if outside schedule"
         required: false
         default: "false"
-        type: booleanto test
-
+        type: boolean
 jobs:
   post:
     runs-on: ubuntu-latest
