@@ -9,7 +9,4 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Print time
-        run: |
-          echo "Scheduled workflow is running"
-          date -u
+      - run: echo "Scheduler works"
