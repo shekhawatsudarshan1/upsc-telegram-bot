@@ -1,12 +1,45 @@
-name: Schedule Test
+name: Hourly UPSC Telegram Post
 
 on:
   schedule:
-    - cron: '*/5 * * * *'
-  workflow_dispatch:
+    # Times below are in UTC. IST = UTC + 5:30, so these correspond to
+    # 6:00 AM, 7:00 AM, 8:00 AM ... 6:00 PM IST (offset to :35 to avoid
+    # peak-load top-of-hour cron delays).
+    - cron: "35 0 * * *"   # 6:00 AM IST
+    - cron: "35 1 * * *"   # 7:00 AM IST
+    - cron: "35 2 * * *"   # 8:00 AM IST
+    - cron: "35 3 * * *"   # 9:00 AM IST
+    - cron: "35 4 * * *"   # 10:00 AM IST
+    - cron: "35 5 * * *"   # 11:00 AM IST
+    - cron: "35 6 * * *"   # 12:00 PM IST
+    - cron: "35 7 * * *"   # 1:00 PM IST
+    - cron: "35 8 * * *"   # 2:00 PM IST
+    - cron: "35 9 * * *"   # 3:00 PM IST
+    - cron: "35 10 * * *"  # 4:00 PM IST
+    - cron: "35 11 * * *"  # 5:00 PM IST
+    - cron: "35 12 * * *"  # 6:00 PM IST
+  workflow_dispatch: {}       # lets you manually trigger a run from the Actions tab to test
+  repository_dispatch:
+    types: [hourly-trigger]   # lets an external scheduler (cron-job.org) trigger this too
 
 jobs:
-  test:
+  post:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Scheduler works"
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate and send post
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python post.py
