@@ -87,20 +87,17 @@ Output ONLY the final post text - no preamble, no "Here's a post", no quotes \
 around it. Do NOT include any sign-off, footer, or channel name yourself - \
 that will be added separately."""
 
-pyq_block = ""
-if include_pyq:
-    pyq_block = f"""
+pyq_block = f"""
 
 After the main explanation, add exactly two more sections:
-📝 PYQ: Include one REAL UPSC Mains previous year question that is genuinely \
-on this exact theme, with the year in brackets, e.g. (UPSC Mains {{year}}). \
-Only use a question you are confident actually appeared - if unsure of the \
-exact year, phrase it as "a previous UPSC Mains question on this theme" \
-without inventing a fake year.
+📝 PYQ: Include one REAL UPSC Mains previous year question on this exact \
+theme, and ALWAYS state the year explicitly in the format (UPSC Mains YYYY). \
+Pick a question and year you are genuinely confident is accurate - draw \
+from well-known, frequently-referenced PYQs on this theme so the year is \
+reliable. Do not leave the year vague or generic.
 🎯 Probable Question ({marks} marks): Write one well-crafted, exam-style \
 probable question worth {marks} marks on today's theme, in authentic UPSC \
 Mains phrasing (e.g. "Discuss...", "Critically examine...", "Analyse...")."""
-
 user_prompt = f"""Today is {today_str}. Write today's {now_ist.strftime('%I %p')} \
 Telegram post for UPSC aspirants.
 
