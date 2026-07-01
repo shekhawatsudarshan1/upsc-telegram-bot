@@ -2,23 +2,15 @@ name: Hourly UPSC Telegram Post
 
 on:
   schedule:
-    # Times below are in UTC. IST = UTC + 5:30, so these correspond to
-    # 6:00 AM, 7:00 AM, 8:00 AM ... 6:00 PM IST (offset to :35 to avoid
-    # peak-load top-of-hour cron delays).
-    - cron: "35 0 * * *"   # 6:00 AM IST
-    - cron: "35 1 * * *"   # 7:00 AM IST
-    - cron: "35 2 * * *"   # 8:00 AM IST
-    - cron: "35 3 * * *"   # 9:00 AM IST
-    - cron: "35 4 * * *"   # 10:00 AM IST
-    - cron: "35 5 * * *"   # 11:00 AM IST
-    - cron: "35 6 * * *"   # 12:00 PM IST
-    - cron: "35 7 * * *"   # 1:00 PM IST
-    - cron: "35 8 * * *"   # 2:00 PM IST
-    - cron: "35 9 * * *"   # 3:00 PM IST
-    - cron: "35 10 * * *"  # 4:00 PM IST
-    - cron: "35 11 * * *"  # 5:00 PM IST
-    - cron: "35 12 * * *"  # 6:00 PM IST
-  workflow_dispatch: {}    # lets you manually trigger a run from the Actions tab to test
+    - cron: "*/5 * * * *"   # Run every 5 minutes (TEST ONLY)
+
+  workflow_dispatch:
+    inputs:
+      force_test:
+        description: "Force a test post even if outside schedule"
+        required: false
+        default: "false"
+        type: booleanto test
 
 jobs:
   post:
