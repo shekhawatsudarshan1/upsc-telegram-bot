@@ -38,6 +38,24 @@ SCHEDULE = {
     18: "A revision/recap style summary tying together a key theme for the day",
 }
 
+# Subject title shown as the bold first line of each post, for branding
+# and quick visual recognition of the slot.
+TITLES = {
+    6:  "📰 Current Affairs Byte",
+    7:  "📜 Polity Byte",
+    8:  "🏺 History Byte",
+    9:  "🗺️ Geography Byte",
+    10: "💰 Economy Byte",
+    11: "🌿 Environment Byte",
+    12: "🖋️ Editorial Byte",
+    13: "🔬 Science & Tech Byte",
+    14: "🏛️ Scheme Spotlight",
+    15: "🌍 IR Byte",
+    16: "🎯 Ethics & Motivation",
+    17: "🧠 Quick Quiz",
+    18: "🔁 Daily Revision",
+}
+
 # Marks weightage for the Mains-style PYQ + probable question added to each
 # post. Hour 17 (quiz) is excluded since it's already question-format.
 MARKS = {
@@ -59,6 +77,7 @@ else:
 
 include_pyq = hour in MARKS
 marks = MARKS.get(hour)
+title = TITLES[hour]
 
 # ---- 2. Generate the post using Claude ----------------------------------
 
@@ -74,37 +93,58 @@ where relevant - never generic filler or vague platitudes.
 - LIVELY TONE: write like an energetic, encouraging mentor talking directly \
 to the aspirant - conversational, warm, a little punchy. Avoid dry textbook \
 phrasing.
-- CONCISE: keep the core explanation to 80-150 words, formatted cleanly for \
-Telegram (short paragraphs, occasional bullet points using '-').
-- EMOJI USE: lively and engaging! Use 3-6 relevant emojis throughout the \
-post - in the heading, to highlight key points, and to add energy. Make it \
-feel exciting and fun to read, not dry or textbook-like, while staying \
-accurate and exam-focused.
-- Do NOT repeat the same examples/facts you'd typically default to - vary \
-specifics each time, pulling from across the breadth of the UPSC syllabus \
-and current affairs as of today's date.
+- CONCISE: keep the core explanation to 80-150 words.
+
+FORMATTING RULES (Telegram Markdown):
+- Start with the exact bold title line given to you, on its own line, \
+followed by a blank line.
+- Use short paragraphs (2-3 sentences max per block).
+- For any list of points, use the bullet symbol "▪️" (not "-", "*" or "•").
+- Leave a blank line between every distinct section (title, explanation, \
+bullets, PYQ, probable question) so the post never looks cramped.
+- EMOJI USE: 3-6 relevant emojis total across the whole post, but never more \
+than 1-2 emojis on any single line - spread them out rather than clustering \
+them together. They should add energy, not clutter.
+
+ANTI-REPETITION RULE (critical):
+- Do NOT reach for the most obvious, textbook, or frequently-cited \
+example/fact/PYQ for the given topic - assume it has likely been used \
+recently. Deliberately pick a less obvious but still well-known and \
+accurate angle, sub-topic, or example within the topic area.
+- Vary sentence openers and structure post-to-post; do not default to the \
+same opening phrase pattern (e.g. always starting with "Did you know").
+- Pull from across the full breadth of the UPSC syllabus and current \
+affairs as of today's date rather than the first thing that comes to mind.
+
 Output ONLY the final post text - no preamble, no "Here's a post", no quotes \
 around it. Do NOT include any sign-off, footer, or channel name yourself - \
 that will be added separately."""
 
 pyq_block = f"""
 
-After the main explanation, add exactly two more sections:
+After the main explanation, add exactly two more sections, each separated \
+by a blank line:
 📝 PYQ: Include one REAL UPSC Mains previous year question on this exact \
 theme, and ALWAYS state the year explicitly in the format (UPSC Mains YYYY). \
 Pick a question and year you are genuinely confident is accurate - draw \
 from well-known, frequently-referenced PYQs on this theme so the year is \
-reliable. Do not leave the year vague or generic.
+reliable, but if you've likely used the single most famous one before, \
+choose a different real PYQ on the same theme instead. Do not leave the \
+year vague or generic.
 🎯 Probable Question ({marks} marks): Write one well-crafted, exam-style \
 probable question worth {marks} marks on today's theme, in authentic UPSC \
 Mains phrasing (e.g. "Discuss...", "Critically examine...", "Analyse...")."""
+
 user_prompt = f"""Today is {today_str}. Write today's {now_ist.strftime('%I %p')} \
 Telegram post for UPSC aspirants.
+
+Title line to use exactly as given: *{title}*
 
 Topic for this hour: {topic_instruction}
 
 Make it specific and non-generic - pick a particular fact, concept, or example \
-rather than speaking in general terms.{pyq_block}"""
+rather than speaking in general terms, and follow the anti-repetition rule \
+strictly.{pyq_block}"""
 
 response = client.messages.create(
     model="claude-sonnet-4-6",
