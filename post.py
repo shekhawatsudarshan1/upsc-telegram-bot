@@ -38,9 +38,7 @@ SCHEDULE = {
     18: "A revision/recap style summary tying together a key theme for the day",
 }
 
-# Subject title shown as the bold first line of each post, for branding
-# and quick visual recognition of the slot.
-TITLES = {
+TITLE_NAMES = {
     6:  "📰 Current Affairs Byte",
     7:  "📜 Polity Byte",
     8:  "🏺 History Byte",
@@ -56,8 +54,25 @@ TITLES = {
     18: "🔁 Daily Revision",
 }
 
-# Marks weightage for the Mains-style PYQ + probable question added to each
-# post. Hour 17 (quiz) is excluded since it's already question-format.
+# The syllabus anchor shown right under the title, and given to Claude as a
+# hard constraint so every topic stays traceable to an actual GS paper -
+# not a standalone news trivia item with no static-syllabus hook.
+GS_PAPERS = {
+    6:  "GS Paper 2/3 — Current Affairs (state which static topic this links to)",
+    7:  "GS Paper 2 — Indian Polity & Governance",
+    8:  "GS Paper 1 — Indian History",
+    9:  "GS Paper 1 — Geography",
+    10: "GS Paper 3 — Indian Economy",
+    11: "GS Paper 3 — Environment & Ecology",
+    12: "GS Paper 2/3 — Current Issue (state which static topic this links to)",
+    13: "GS Paper 3 — Science & Technology",
+    14: "GS Paper 2 — Governance & Schemes",
+    15: "GS Paper 2 — International Relations",
+    16: "GS Paper 4 — Ethics",
+    17: "Prelims — MCQ Practice",
+    18: "Revision — Cross-cutting",
+}
+
 MARKS = {
     6: 10, 7: 15, 8: 10, 9: 15, 10: 15, 11: 10,
     12: 15, 13: 10, 14: 10, 15: 15, 16: 15, 18: 10,
@@ -65,7 +80,6 @@ MARKS = {
 
 if hour not in SCHEDULE:
     if os.environ.get("FORCE_TEST") == "true":
-        # Manual test run - pick a representative topic regardless of hour
         hour = 7
         topic_instruction = SCHEDULE[hour]
         print(f"FORCE_TEST enabled - ignoring schedule, using hour {hour} topic for a test post.")
@@ -77,7 +91,15 @@ else:
 
 include_pyq = hour in MARKS
 marks = MARKS.get(hour)
-title = TITLES[hour]
+gs_paper = GS_PAPERS[hour]
+
+# Build the time-stamped title, e.g. "📰 6 AM Current Affairs Byte".
+# strftime('%I') gives a zero-padded hour (e.g. "06"); strip the leading
+# zero so it reads "6 AM" not "06 AM".
+time_str = now_ist.strftime("%I %p").lstrip("0")
+name_parts = TITLE_NAMES[hour].split(" ", 1)  # [emoji, "rest of name"]
+icon, rest_of_name = name_parts[0], name_parts[1]
+title = f"{icon} {time_str} {rest_of_name}"
 
 # ---- 2. Generate the post using Claude ----------------------------------
 
@@ -93,15 +115,39 @@ where relevant - never generic filler or vague platitudes.
 - LIVELY TONE: write like an energetic, encouraging mentor talking directly \
 to the aspirant - conversational, warm, a little punchy. Avoid dry textbook \
 phrasing.
-- CONCISE: keep the core explanation to 80-150 words.
+- CONCISE: keep the core explanation to 80-150 words. Do NOT expand this \
+budget even to add depth - depth has to come from tighter writing, not \
+more words.
+
+SYLLABUS ANCHORING (critical):
+- The topic must tie to a genuine, identifiable UPSC syllabus item, not a \
+standalone news/trivia snippet with no conceptual anchor. If the hook is a \
+current-affairs event, explicitly connect it back to the static syllabus \
+concept it tests within the first two sentences - do not just narrate the \
+news.
+- Reject niche or overly obscure angles that a Prelims/Mains examiner would \
+never realistically draw a question from. Stay within the mainstream \
+UPSC-relevant scope of the topic, even while picking a less-repeated \
+example within it.
+
+DEPTH OVER DESCRIPTION (critical):
+- Spend most of the word budget on analysis, not narration: why it matters, \
+the static-dynamic linkage (how the current event connects to the \
+underlying syllabus concept), causes/implications, or a brief comparison. \
+Limit scene-setting/context to at most one sentence.
+- Cut generic filler, throat-clearing, or restating the topic name - every \
+sentence should teach something an aspirant can use.
 
 FORMATTING RULES (Telegram Markdown):
-- Start with the exact bold title line given to you, on its own line, \
-followed by a blank line.
+- Line 1: the exact bold title line given to you.
+- Line 2: the exact GS paper/syllabus tag given to you, in italics, small \
+and unobtrusive (e.g. "_GS Paper 3 — Indian Economy_").
+- Leave a blank line, then the core explanation.
 - Use short paragraphs (2-3 sentences max per block).
 - For any list of points, use the bullet symbol "▪️" (not "-", "*" or "•").
-- Leave a blank line between every distinct section (title, explanation, \
-bullets, PYQ, probable question) so the post never looks cramped.
+- Leave a blank line between every distinct section (title+tag, \
+explanation, bullets, Prelims angle, PYQ, probable question) so the post \
+never looks cramped.
 - EMOJI USE: 3-6 relevant emojis total across the whole post, but never more \
 than 1-2 emojis on any single line - spread them out rather than clustering \
 them together. They should add energy, not clutter.
@@ -109,8 +155,8 @@ them together. They should add energy, not clutter.
 ANTI-REPETITION RULE (critical):
 - Do NOT reach for the most obvious, textbook, or frequently-cited \
 example/fact/PYQ for the given topic - assume it has likely been used \
-recently. Deliberately pick a less obvious but still well-known and \
-accurate angle, sub-topic, or example within the topic area.
+recently. Deliberately pick a less obvious but still mainstream, accurate \
+angle, sub-topic, or example within the topic area.
 - Vary sentence openers and structure post-to-post; do not default to the \
 same opening phrase pattern (e.g. always starting with "Did you know").
 - Pull from across the full breadth of the UPSC syllabus and current \
@@ -122,8 +168,11 @@ that will be added separately."""
 
 pyq_block = f"""
 
-After the main explanation, add exactly two more sections, each separated \
-by a blank line:
+After the main explanation, add exactly three more short sections, each \
+separated by a blank line:
+📌 Prelims Angle: One crisp, specific fact/data-point/date from this topic \
+phrased the way it would actually appear as a Prelims MCQ statement (e.g. \
+"X is headquartered in Y" or "X Act was passed in YYYY") - one line only.
 📝 PYQ: Include one REAL UPSC Mains previous year question on this exact \
 theme, and ALWAYS state the year explicitly in the format (UPSC Mains YYYY). \
 Pick a question and year you are genuinely confident is accurate - draw \
@@ -139,12 +188,15 @@ user_prompt = f"""Today is {today_str}. Write today's {now_ist.strftime('%I %p')
 Telegram post for UPSC aspirants.
 
 Title line to use exactly as given: *{title}*
+GS paper tag to use exactly as given (in italics): _{gs_paper}_
 
 Topic for this hour: {topic_instruction}
 
 Make it specific and non-generic - pick a particular fact, concept, or example \
-rather than speaking in general terms, and follow the anti-repetition rule \
-strictly.{pyq_block}"""
+rather than speaking in general terms. Follow the anti-repetition rule, the \
+syllabus anchoring rule, and the depth-over-description rule strictly - stay \
+within the 80-150 word core explanation even while adding analytical \
+depth.{pyq_block}"""
 
 response = client.messages.create(
     model="claude-sonnet-4-6",
