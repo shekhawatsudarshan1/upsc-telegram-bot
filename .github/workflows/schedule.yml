@@ -30,10 +30,10 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python post.py
 
-      - name: Commit updated topic history
+      - name: Commit updated tracking files
         run: |
           git config user.name "apex-cca-bot"
           git config user.email "actions@github.com"
-          git add topic_history.json
-          git diff --cached --quiet || git commit -m "Update topic history"
+          git add topic_history.json syllabus_progress.json
+          git diff --cached --quiet || git commit -m "Update topic history and syllabus progress"
           git push
