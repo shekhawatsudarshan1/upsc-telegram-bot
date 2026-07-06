@@ -11,9 +11,13 @@ Required environment variables (set as GitHub Actions secrets):
 
 import os
 import sys
+import json
 import datetime
 import requests
 import anthropic
+
+HISTORY_FILE = "topic_history.json"
+HISTORY_DAYS = 30
 
 # ---- 1. Determine current hour (IST) and matching topic ----------------
 
@@ -100,6 +104,43 @@ time_str = now_ist.strftime("%I %p").lstrip("0")
 name_parts = TITLE_NAMES[hour].split(" ", 1)  # [emoji, "rest of name"]
 icon, rest_of_name = name_parts[0], name_parts[1]
 title = f"{icon} {time_str} {rest_of_name}"
+subject_key = rest_of_name  # e.g. "Polity Byte" - used to scope history lookups
+
+# ---- 1b. Load topic history and prune anything older than HISTORY_DAYS ----
+
+if os.path.exists(HISTORY_FILE):
+    with open(HISTORY_FILE, "r", encoding="utf-8") as f:
+        try:
+            history = json.load(f)
+        except json.JSONDecodeError:
+            history = []
+else:
+    history = []
+
+cutoff = now_ist - datetime.timedelta(days=HISTORY_DAYS)
+
+
+def _entry_date(entry):
+    return datetime.datetime.strptime(entry["date"], "%Y-%m-%d").replace(tzinfo=IST)
+
+
+history = [e for e in history if _entry_date(e) >= cutoff]
+
+# Only show the model themes from the SAME subject slot (e.g. past Polity
+# Bytes when writing today's Polity Byte) - keeps the list short and relevant
+# instead of dumping all 13 slots' worth of history into the prompt.
+recent_same_subject = [e for e in history if e.get("subject") == subject_key]
+
+if recent_same_subject:
+    history_lines = "\n".join(f"- {e['theme']}" for e in recent_same_subject)
+    history_block = f"""
+
+Themes already covered in this slot over the last {HISTORY_DAYS} days - do \
+NOT repeat any of these topics or exact themes, pick something genuinely \
+different:
+{history_lines}"""
+else:
+    history_block = ""
 
 # ---- 2. Generate the post using Claude ----------------------------------
 
@@ -164,7 +205,14 @@ affairs as of today's date rather than the first thing that comes to mind.
 
 Output ONLY the final post text - no preamble, no "Here's a post", no quotes \
 around it. Do NOT include any sign-off, footer, or channel name yourself - \
-that will be added separately."""
+that will be added separately.
+
+After the ENTIRE post (including PYQ/probable question sections), add one \
+final line, on its own, in this EXACT machine-readable format and nothing \
+else on that line:
+THEME_TAG: <3-6 word summary of today's specific topic/theme>
+This line is for internal tracking only and will be stripped before \
+publishing - it must still be included every time."""
 
 pyq_block = f"""
 
@@ -196,7 +244,7 @@ Make it specific and non-generic - pick a particular fact, concept, or example \
 rather than speaking in general terms. Follow the anti-repetition rule, the \
 syllabus anchoring rule, and the depth-over-description rule strictly - stay \
 within the 80-150 word core explanation even while adding analytical \
-depth.{pyq_block}"""
+depth.{history_block}{pyq_block}"""
 
 response = client.messages.create(
     model="claude-sonnet-4-6",
@@ -205,7 +253,19 @@ response = client.messages.create(
     messages=[{"role": "user", "content": user_prompt}],
 )
 
-post_text = response.content[0].text.strip()
+raw_text = response.content[0].text.strip()
+
+# Split off the internal THEME_TAG line (last line) - never send it to Telegram.
+lines = raw_text.splitlines()
+theme = "Unspecified"
+if lines and lines[-1].strip().upper().startswith("THEME_TAG:"):
+    theme = lines[-1].split(":", 1)[1].strip()
+    lines = lines[:-1]
+# Also drop a trailing blank line left behind after removing the tag.
+while lines and not lines[-1].strip():
+    lines.pop()
+
+post_text = "\n".join(lines).strip()
 post_text = f"{post_text}\n\n— @ApexCCAcademy"
 
 # ---- 3. Send to Telegram --------------------------------------------------
@@ -231,3 +291,17 @@ if resp.status_code != 200:
 print(f"Posted successfully for hour {hour} IST.")
 print("---")
 print(post_text)
+
+# ---- 4. Save today's theme to history for future 30-day dedup checks -----
+
+history.append({
+    "date": now_ist.strftime("%Y-%m-%d"),
+    "hour": hour,
+    "subject": subject_key,
+    "theme": theme,
+})
+
+with open(HISTORY_FILE, "w", encoding="utf-8") as f:
+    json.dump(history, f, ensure_ascii=False, indent=2)
+
+print(f"Saved theme to history: {theme}")
