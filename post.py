@@ -701,7 +701,7 @@ while lines and not lines[-1].strip():
     lines.pop()
 
 post_text = "\n".join(lines).strip()
-post_text = f"{post_text}\n\n— @ApexCCAcademy"
+post_text = f"{post_text}\n\n— @ApexCivica"
 
 # ---- 3. Send to Telegram --------------------------------------------------
 
