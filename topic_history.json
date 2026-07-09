@@ -208,5 +208,11 @@
     "hour": 6,
     "subject": "Current Affairs Byte",
     "theme": "IMEC corridor geopolitical fragility connectivity"
+  },
+  {
+    "date": "2026-07-09",
+    "hour": 7,
+    "subject": "Polity Byte",
+    "theme": "Article 12 State definition Fundamental Rights enforcement"
   }
 ]
