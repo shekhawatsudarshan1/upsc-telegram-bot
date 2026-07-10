@@ -280,5 +280,11 @@
     "hour": 6,
     "subject": "Current Affairs Byte",
     "theme": "IMF Article IV India macroeconomic surveillance"
+  },
+  {
+    "date": "2026-07-10",
+    "hour": 7,
+    "subject": "Polity Byte",
+    "theme": "Article 14-18 Right to Equality doctrine"
   }
 ]
