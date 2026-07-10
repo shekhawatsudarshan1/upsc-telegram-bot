@@ -720,8 +720,19 @@ resp = requests.post(
 )
 
 if resp.status_code != 200:
-    print(f"Telegram send failed: {resp.status_code} {resp.text}")
-    sys.exit(1)
+    print(f"Markdown send failed: {resp.status_code} {resp.text}")
+    print("Retrying as plain text...")
+    resp = requests.post(
+        telegram_url,
+        data={
+            "chat_id": chat_id,
+            "text": post_text,
+        },
+        timeout=30,
+    )
+    if resp.status_code != 200:
+        print(f"Plain text send also failed: {resp.status_code} {resp.text}")
+        sys.exit(1)
 
 print(f"Posted successfully for hour {hour} IST.")
 print("---")
