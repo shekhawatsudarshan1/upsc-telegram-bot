@@ -460,5 +460,11 @@
     "hour": 10,
     "subject": "Economy Byte",
     "theme": "RBI monetary policy tools transmission lag"
+  },
+  {
+    "date": "2026-07-12",
+    "hour": 11,
+    "subject": "Environment Byte",
+    "theme": "Biosphere Reserve zoning UNESCO MAB framework"
   }
 ]
