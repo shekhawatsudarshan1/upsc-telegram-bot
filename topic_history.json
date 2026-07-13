@@ -514,5 +514,11 @@
     "hour": 6,
     "subject": "Current Affairs Byte",
     "theme": "NISAR satellite ISRO NASA space cooperation"
+  },
+  {
+    "date": "2026-07-13",
+    "hour": 7,
+    "subject": "Polity Byte",
+    "theme": "Articles 25-28 Right to Freedom of Religion"
   }
 ]
