@@ -844,5 +844,11 @@
     "hour": 9,
     "subject": "Geography Byte",
     "theme": "Indian monsoon mechanism ITCZ jet streams"
+  },
+  {
+    "date": "2026-07-17",
+    "hour": 10,
+    "subject": "Economy Byte",
+    "theme": "SEBI capital markets settlement cycle regulation"
   }
 ]
