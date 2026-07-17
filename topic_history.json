@@ -850,5 +850,11 @@
     "hour": 10,
     "subject": "Economy Byte",
     "theme": "SEBI capital markets settlement cycle regulation"
+  },
+  {
+    "date": "2026-07-17",
+    "hour": 11,
+    "subject": "Environment Byte",
+    "theme": "UNFCCC COP consensus climate finance architecture"
   }
 ]
