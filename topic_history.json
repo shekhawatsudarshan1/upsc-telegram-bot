@@ -904,5 +904,11 @@
     "hour": 6,
     "subject": "Current Affairs Byte",
     "theme": "India energy efficiency multilateral IEA NDC"
+  },
+  {
+    "date": "2026-07-18",
+    "hour": 7,
+    "subject": "Polity Byte",
+    "theme": "President veto powers Article 111 pocket veto"
   }
 ]
