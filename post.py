@@ -87,8 +87,10 @@ MARKS = {
 # syllabus (not open-ended current affairs). The bot works through each
 # list in order, one item per day for that slot, looping back to the start
 # once the full list is exhausted - so coverage is systematic across the
-# year rather than random. Current Affairs, Editorial, Quiz, and Revision
-# slots are current-events-driven and don't use a fixed checklist.
+# year rather than random. Current Affairs, Editorial, and Revision slots
+# are current-events-driven and don't use a fixed checklist. The Quiz slot
+# also has no dedicated list of its own, but reuses these same checklists
+# via QUIZ_SUBJECT_ROTATION below (see that block for details).
 SYLLABUS_CHECKLISTS = {
     "Polity Byte": [
         # 2.1.1 Historical Underpinnings and Core Philosophy
@@ -473,6 +475,22 @@ SYLLABUS_CHECKLISTS = {
     ],
 }
 
+# The Quiz slot has no checklist of its own - instead it rotates through the
+# SAME subject pool as the other slots, one subject per day in fixed order,
+# looping back to the start once exhausted. This is what makes the quiz
+# systematically sweep the full syllabus breadth instead of drifting back to
+# the same handful of "safe"/frequently-cited MCQ topics every day.
+QUIZ_SUBJECT_ROTATION = [
+    "Polity Byte",
+    "History Byte",
+    "Geography Byte",
+    "Economy Byte",
+    "Environment Byte",
+    "Science & Tech Byte",
+    "IR Byte",
+    "Ethics & Motivation",
+]
+
 if hour not in SCHEDULE:
     if os.environ.get("FORCE_TEST") == "true":
         hour = 7
@@ -510,16 +528,44 @@ else:
     syllabus_progress = {}
 
 syllabus_unit = None
+quiz_subject = None
 checklist = SYLLABUS_CHECKLISTS.get(subject_key)
+progress_dirty = False
+
 if checklist:
     idx = syllabus_progress.get(subject_key, 0) % len(checklist)
     syllabus_unit = checklist[idx]
     syllabus_progress[subject_key] = idx + 1
+    progress_dirty = True
     topic_instruction = (
         f"{topic_instruction}. Today's exact syllabus checklist item to cover "
         f"is: \"{syllabus_unit}\" - build the whole post around this specific "
         f"unit (illustrated with a fresh, current, real-world example or "
         f"news hook), not a different sub-topic."
+    )
+elif subject_key == "Quick Quiz":
+    # Rotate to today's quiz subject (fixed order, loops once exhausted).
+    rotation_idx = syllabus_progress.get("Quick Quiz_subject_idx", 0) % len(QUIZ_SUBJECT_ROTATION)
+    quiz_subject = QUIZ_SUBJECT_ROTATION[rotation_idx]
+    syllabus_progress["Quick Quiz_subject_idx"] = rotation_idx + 1
+
+    # Within that subject, advance through its checklist independently of
+    # that subject's own daily slot - so the quiz's coverage is systematic
+    # too, not just "pick anything from this subject".
+    quiz_checklist = SYLLABUS_CHECKLISTS[quiz_subject]
+    quiz_progress_key = f"Quick Quiz::{quiz_subject}"
+    quiz_item_idx = syllabus_progress.get(quiz_progress_key, 0) % len(quiz_checklist)
+    syllabus_unit = quiz_checklist[quiz_item_idx]
+    syllabus_progress[quiz_progress_key] = quiz_item_idx + 1
+    progress_dirty = True
+
+    topic_instruction = (
+        f"{topic_instruction} Today's MCQ must specifically test this "
+        f"syllabus item from {quiz_subject.replace(' Byte', '').replace(' & Motivation', ' (GS-4)')}: "
+        f"\"{syllabus_unit}\" - write one MCQ that probes this exact unit "
+        f"(not a different sub-topic), using a fresh angle, statement-based "
+        f"format, or current-affairs hook where relevant rather than the "
+        f"most obvious textbook framing of it."
     )
 
 # ---- 1b. Load topic history and prune anything older than HISTORY_DAYS ----
@@ -733,7 +779,11 @@ with open(HISTORY_FILE, "w", encoding="utf-8") as f:
 
 print(f"Saved theme to history: {theme}")
 
-if checklist:
+if progress_dirty:
     with open(SYLLABUS_PROGRESS_FILE, "w", encoding="utf-8") as f:
         json.dump(syllabus_progress, f, ensure_ascii=False, indent=2)
-    print(f"Syllabus checklist item used: {syllabus_unit} (next index: {syllabus_progress[subject_key]})")
+    if checklist:
+        print(f"Syllabus checklist item used: {syllabus_unit} (next index: {syllabus_progress[subject_key]})")
+    elif quiz_subject:
+        print(f"Quiz syllabus item used: {syllabus_unit} (subject: {quiz_subject}, "
+              f"next quiz subject index: {syllabus_progress['Quick Quiz_subject_idx']})")
