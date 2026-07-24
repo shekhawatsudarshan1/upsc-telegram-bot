@@ -1402,5 +1402,11 @@
     "hour": 10,
     "subject": "Economy Byte",
     "theme": "BoP surplus services remittances stabilisers"
+  },
+  {
+    "date": "2026-07-24",
+    "hour": 11,
+    "subject": "Environment Byte",
+    "theme": "Solid waste management SBM 2.0 legacy dumpsites"
   }
 ]
