@@ -1684,5 +1684,11 @@
     "hour": 17,
     "subject": "Quick Quiz",
     "theme": "GDP GNP NDP NNP national income aggregates"
+  },
+  {
+    "date": "2026-07-27",
+    "hour": 18,
+    "subject": "Daily Revision",
+    "theme": "Article 249 Centre-State legislative override federalism"
   }
 ]
