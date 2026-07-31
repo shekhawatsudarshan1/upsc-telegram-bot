@@ -1948,5 +1948,11 @@
     "hour": 9,
     "subject": "Geography Byte",
     "theme": "Pseudo-urbanization Census Towns migration India"
+  },
+  {
+    "date": "2026-07-31",
+    "hour": 10,
+    "subject": "Economy Byte",
+    "theme": "Four Labour Codes implementation formalisation challenge"
   }
 ]
