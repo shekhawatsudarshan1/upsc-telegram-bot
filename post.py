@@ -685,6 +685,18 @@ than a specific but shaky one.
 (percentages, rupee/dollar figures, rankings), named office-holders or \
 office-holder-specific claims, and claimed "latest"/"current" status of \
 any scheme, policy, or figure.
+- SPECIFIC HIGH-RISK CASE - amendment/provision attribution: when stating \
+that a particular Amendment, Act, or judgment introduced/added/changed a \
+specific rule (e.g. "the 44th Amendment added the two-month approval \
+requirement"), this is a distinct factual claim from the rule itself being \
+true - a rule can be real while its attributed origin is wrong (e.g. a \
+provision that actually existed in the original 1950 text, misattributed \
+to a later amendment). Do not state which amendment/act/judgment \
+introduced a provision unless you are specifically confident about THAT \
+origin claim, not just that the provision exists. If unsure of the origin, \
+either state the rule without attributing it to a specific amendment, or \
+use hedged framing ("later strengthened by amendments including...") \
+rather than a confident single attribution you have not verified.
 
 Output ONLY the final post text - no preamble, no "Here's a post", no quotes \
 around it. Do NOT include any sign-off, footer, or channel name yourself - \
@@ -712,19 +724,30 @@ paraphrase-then-reattribute, blend, or reconstruct a question from \
 fragments of different real questions or from a topic summary. A \
 part-remembered question presented as verbatim is a fabrication, even if \
 every individual phrase in it sounds authentic.
+- Widening to a related theme (see below) does NOT lower this bar. \
+"Related" only changes WHICH real question you may pick - it never \
+justifies less certainty about whether the question and its year are \
+genuinely real. Adding a "closely related" explanatory clause does not \
+excuse fabrication; a fabricated question with a justification attached is \
+still fabricated.
+- Coaching-institute mock/practice questions, mains-answer-writing-practice \
+prompts, and test-series questions are NOT actual UPSC PYQs even when \
+phrased like one and dated - do not present these as "(UPSC Mains YYYY)". \
+If a question-and-year pairing feels like it could plausibly be a practice \
+question rather than something you've verified as the genuine exam paper, \
+treat it as NOT confident enough to use.
 - If you cannot recall a specific real PYQ on this EXACT angle with that \
 level of confidence, do NOT invent one and do NOT leave the PYQ section \
-empty or placeholder-only. Instead, widen your search: use a real PYQ on \
-the broader subject area, the same GS paper theme, or a related concept \
-this topic connects to, and add one short clause naming the connection \
-(e.g. "closely related - this PYQ on X tests the same underlying \
-principle"). Aim to always surface a genuine, verbatim PYQ this way - the \
-vast majority of GS topics have SOME real PYQ within one or two steps of \
-relatedness.
-- Only if you are genuinely unable to recall ANY real PYQ within that \
-wider net - which should be rare - write "📝 PYQ: No closely-matching \
-verified PYQ found - focus on the Probable Question below for practice." \
-Treat this as a last resort, not a convenient default.
+empty or placeholder-only. Instead, widen your search: use a real PYQ - \
+one you are equally certain is genuine and correctly dated - on the \
+broader subject area, the same GS paper theme, or a related concept this \
+topic connects to, and add one short clause naming the connection (e.g. \
+"closely related - this PYQ on X tests the same underlying principle").
+- Only if you are genuinely unable to recall ANY real, verifiably-dated PYQ \
+within that wider net - which should be rare - write "📝 PYQ: No \
+closely-matching verified PYQ found - focus on the Probable Question below \
+for practice." This is a last resort, but it is always preferable to a \
+fabricated or uncertain citation.
 - If you've likely used the single most famous real PYQ on this theme \
 before, choose a different real PYQ on the same or related theme instead, \
 subject to the same confidence bar above.
