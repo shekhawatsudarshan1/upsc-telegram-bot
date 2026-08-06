@@ -705,12 +705,23 @@ separated by a blank line:
 phrased the way it would actually appear as a Prelims MCQ statement (e.g. \
 "X is headquartered in Y" or "X Act was passed in YYYY") - one line only.
 📝 PYQ: Include one REAL UPSC Mains previous year question on this exact \
-theme, and ALWAYS state the year explicitly in the format (UPSC Mains YYYY). \
-Pick a question and year you are genuinely confident is accurate - draw \
-from well-known, frequently-referenced PYQs on this theme so the year is \
-reliable, but if you've likely used the single most famous one before, \
-choose a different real PYQ on the same theme instead. Do not leave the \
-year vague or generic.
+theme, and ALWAYS state the year explicitly in the format (UPSC Mains YYYY).
+- Only use a PYQ whose exact wording AND year you can recall with genuine \
+confidence, as a single question you have seen verbatim - never construct, \
+paraphrase-then-reattribute, blend, or reconstruct a question from \
+fragments of different real questions or from a topic summary. A \
+part-remembered question presented as verbatim is a fabrication, even if \
+every individual phrase in it sounds authentic.
+- If you cannot recall a specific real PYQ on this exact theme with that \
+level of confidence, do NOT invent one. Instead, either (a) use a PYQ on a \
+closely related theme you ARE confident is real and briefly note the \
+connection, or (b) write "📝 PYQ: No closely-matching verified PYQ for this \
+specific angle - focus on the Probable Question below for practice." Do \
+NOT fabricate a plausible-sounding question or year to avoid using this \
+fallback.
+- If you've likely used the single most famous real PYQ on this theme \
+before, choose a different real PYQ on the same theme instead, subject to \
+the same confidence bar above.
 🎯 Probable Question ({marks} marks): Write one well-crafted, exam-style \
 probable question worth {marks} marks on today's theme, in authentic UPSC \
 Mains phrasing (e.g. "Discuss...", "Critically examine...", "Analyse...")."""
