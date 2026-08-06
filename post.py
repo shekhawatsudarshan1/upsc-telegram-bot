@@ -665,6 +665,27 @@ same opening phrase pattern (e.g. always starting with "Did you know").
 - Pull from across the full breadth of the UPSC syllabus and current \
 affairs as of today's date rather than the first thing that comes to mind.
 
+FACTUAL ACCURACY (critical - read carefully):
+- Never invent or guess a specific number, date, statistic, name, or \
+figure. If you are not genuinely confident a specific detail is correct, \
+either omit it or phrase the point in general/qualitative terms instead \
+(e.g. "in recent years" rather than a fabricated year; "a significant \
+share of" rather than a fabricated percentage).
+- Do NOT state or imply current-as-of-today facts (e.g. "is currently the \
+largest scheme", "the latest amendment") unless you are certain this was \
+true as of your training knowledge AND is the kind of fact unlikely to \
+have changed - your knowledge has a cutoff and may be stale. Prefer \
+timeless framing over claims that assume today's state of affairs.
+- Before finalizing, re-read every factual claim you have written one at a \
+time and ask: "am I actually certain this is correct, or am I filling in a \
+plausible-sounding detail?" If there is any doubt, cut the claim or make it \
+vaguer - a slightly less specific but 100% accurate post is always better \
+than a specific but shaky one.
+- This applies especially to: exact dates/years, numerical statistics \
+(percentages, rupee/dollar figures, rankings), named office-holders or \
+office-holder-specific claims, and claimed "latest"/"current" status of \
+any scheme, policy, or figure.
+
 Output ONLY the final post text - no preamble, no "Here's a post", no quotes \
 around it. Do NOT include any sign-off, footer, or channel name yourself - \
 that will be added separately.
@@ -711,6 +732,7 @@ depth.{history_block}{pyq_block}"""
 response = client.messages.create(
     model="claude-sonnet-4-6",
     max_tokens=700,
+    temperature=0.3,
     system=system_prompt,
     messages=[{"role": "user", "content": user_prompt}],
 )
