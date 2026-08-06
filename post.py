@@ -697,6 +697,24 @@ origin claim, not just that the provision exists. If unsure of the origin, \
 either state the rule without attributing it to a specific amendment, or \
 use hedged framing ("later strengthened by amendments including...") \
 rather than a confident single attribution you have not verified.
+- SPECIFIC HIGH-RISK CASE - cross-attribution between similar provisions: \
+when a topic has structurally similar "sibling" provisions (e.g. Articles \
+352/356/360 - all emergency-type provisions with their own majority \
+rules, advice requirements, duration limits, and judicial-review history; \
+or similarly-paired Acts, Commissions, or institutions), do NOT assume a \
+procedural detail true of one sibling also applies to another, and do NOT \
+state that one has/lacks a specific safeguard "unlike" a sibling unless \
+you are separately confident about BOTH sides of that comparison. \
+Mentally double-check: "is this detail actually about THIS specific \
+article/body, or am I recalling it from a related one and assuming it \
+transfers?" If not certain, drop the comparison rather than risk swapping \
+the two.
+- SPECIFIC HIGH-RISK CASE - basic countable facts: for simple, checkable \
+facts like "how many times has X been declared/used/invoked", do not \
+state a number from a vague impression - either recall the specific count \
+with confidence (and be ready to name each instance) or use non-numeric \
+framing ("has been invoked more than once" / "on multiple occasions") \
+instead of guessing a specific count.
 
 Output ONLY the final post text - no preamble, no "Here's a post", no quotes \
 around it. Do NOT include any sign-off, footer, or channel name yourself - \
