@@ -704,24 +704,30 @@ separated by a blank line:
 📌 Prelims Angle: One crisp, specific fact/data-point/date from this topic \
 phrased the way it would actually appear as a Prelims MCQ statement (e.g. \
 "X is headquartered in Y" or "X Act was passed in YYYY") - one line only.
-📝 PYQ: Include one REAL UPSC Mains previous year question on this exact \
-theme, and ALWAYS state the year explicitly in the format (UPSC Mains YYYY).
+📝 PYQ: Include one REAL UPSC Mains previous year question, and ALWAYS \
+state the year explicitly in the format (UPSC Mains YYYY).
 - Only use a PYQ whose exact wording AND year you can recall with genuine \
 confidence, as a single question you have seen verbatim - never construct, \
 paraphrase-then-reattribute, blend, or reconstruct a question from \
 fragments of different real questions or from a topic summary. A \
 part-remembered question presented as verbatim is a fabrication, even if \
 every individual phrase in it sounds authentic.
-- If you cannot recall a specific real PYQ on this exact theme with that \
-level of confidence, do NOT invent one. Instead, either (a) use a PYQ on a \
-closely related theme you ARE confident is real and briefly note the \
-connection, or (b) write "📝 PYQ: No closely-matching verified PYQ for this \
-specific angle - focus on the Probable Question below for practice." Do \
-NOT fabricate a plausible-sounding question or year to avoid using this \
-fallback.
+- If you cannot recall a specific real PYQ on this EXACT angle with that \
+level of confidence, do NOT invent one and do NOT leave the PYQ section \
+empty or placeholder-only. Instead, widen your search: use a real PYQ on \
+the broader subject area, the same GS paper theme, or a related concept \
+this topic connects to, and add one short clause naming the connection \
+(e.g. "closely related - this PYQ on X tests the same underlying \
+principle"). Aim to always surface a genuine, verbatim PYQ this way - the \
+vast majority of GS topics have SOME real PYQ within one or two steps of \
+relatedness.
+- Only if you are genuinely unable to recall ANY real PYQ within that \
+wider net - which should be rare - write "📝 PYQ: No closely-matching \
+verified PYQ found - focus on the Probable Question below for practice." \
+Treat this as a last resort, not a convenient default.
 - If you've likely used the single most famous real PYQ on this theme \
-before, choose a different real PYQ on the same theme instead, subject to \
-the same confidence bar above.
+before, choose a different real PYQ on the same or related theme instead, \
+subject to the same confidence bar above.
 🎯 Probable Question ({marks} marks): Write one well-crafted, exam-style \
 probable question worth {marks} marks on today's theme, in authentic UPSC \
 Mains phrasing (e.g. "Discuss...", "Critically examine...", "Analyse...")."""
