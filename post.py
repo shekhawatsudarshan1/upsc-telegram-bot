@@ -524,7 +524,38 @@ PYQ_BANK = {
             "year": 2018,
         },
     ],
-    "History Byte": [],
+    "History Byte": [
+        {
+            "q": "Discuss the salient features of the Harappan architecture.",
+            "exam": "Mains",
+            "year": 2025,
+        },
+        {
+            "q": "Examine the main aspects of Akbar's religious syncretism.",
+            "exam": "Mains",
+            "year": 2025,
+        },
+        {
+            "q": "Mahatma Jotirao Phule's writings and efforts of social "
+                 "reforms touched issues of almost all subaltern classes. "
+                 "Discuss.",
+            "exam": "Mains",
+            "year": 2025,
+        },
+        {
+            "q": "Trace India's consolidation process during early phase "
+                 "of independence in terms of polity, economy, education "
+                 "and international relations.",
+            "exam": "Mains",
+            "year": 2025,
+        },
+        {
+            "q": "The French Revolution has enduring relevance to the "
+                 "contemporary world. Explain.",
+            "exam": "Mains",
+            "year": 2025,
+        },
+    ],
     "Geography Byte": [],
     "Economy Byte": [],
     "Environment Byte": [],
@@ -535,6 +566,25 @@ PYQ_BANK = {
     "IR Byte": [],
     "Ethics & Motivation": [],
     "Daily Revision": [],
+}
+
+# When a subject's own PYQ_BANK list is empty, borrow from these related
+# subjects instead (in order) rather than showing a placeholder. Grouped by
+# rough GS-paper adjacency. If every listed fallback is ALSO empty, the PYQ
+# section is simply omitted from the post - never a visible "no PYQ" line.
+NEARBY_SUBJECTS = {
+    "Polity Byte": ["Editorial Byte", "IR Byte"],
+    "History Byte": ["Current Affairs Byte"],
+    "Geography Byte": ["Environment Byte", "Science & Tech Byte"],
+    "Economy Byte": ["Scheme Spotlight", "Editorial Byte"],
+    "Environment Byte": ["Geography Byte", "Science & Tech Byte"],
+    "Current Affairs Byte": ["Polity Byte", "Economy Byte", "IR Byte"],
+    "Editorial Byte": ["Polity Byte", "Economy Byte"],
+    "Science & Tech Byte": ["Environment Byte"],
+    "Scheme Spotlight": ["Economy Byte", "Polity Byte"],
+    "IR Byte": ["Polity Byte"],
+    "Ethics & Motivation": ["Polity Byte"],
+    "Daily Revision": ["Polity Byte", "History Byte"],
 }
 
 if hour not in SCHEDULE:
@@ -615,25 +665,27 @@ elif subject_key == "Quick Quiz":
     )
 
 # ---- 1c. Pick today's PYQ (if this slot uses one) from the verified bank -
-#          instead of asking Claude to recall one. Rotates through the
-#          bank's entries for this subject so repeats aren't shown before
-#          the list has been fully cycled. If the bank has no entries yet
-#          for this subject, falls back to an honest static line - never a
-#          guess.
+#          instead of asking Claude to recall one. Tries this subject's own
+#          bank first (rotating through it so repeats aren't shown before
+#          the list has cycled); if that's empty, walks NEARBY_SUBJECTS to
+#          borrow a related-subject PYQ instead. If nothing is found
+#          anywhere in that chain, the PYQ section is omitted from the post
+#          entirely - no placeholder text, no visible gap.
 
 pyq_line = None
 if hour in MARKS:
-    bank_list = PYQ_BANK.get(subject_key, [])
-    if bank_list:
-        pyq_idx_key = f"{subject_key}_pyq_idx"
-        p_idx = syllabus_progress.get(pyq_idx_key, 0) % len(bank_list)
-        entry = bank_list[p_idx]
-        syllabus_progress[pyq_idx_key] = p_idx + 1
-        progress_dirty = True
-        pyq_line = f'📝 PYQ: "{entry["q"]}" (UPSC {entry["exam"]} {entry["year"]})'
-    else:
-        pyq_line = ("📝 PYQ: No verified PYQ in the bank yet for this topic "
-                     "- focus on the Probable Question below for practice.")
+    for candidate_subject in [subject_key] + NEARBY_SUBJECTS.get(subject_key, []):
+        bank_list = PYQ_BANK.get(candidate_subject, [])
+        if bank_list:
+            pyq_idx_key = f"{candidate_subject}_pyq_idx"
+            p_idx = syllabus_progress.get(pyq_idx_key, 0) % len(bank_list)
+            entry = bank_list[p_idx]
+            syllabus_progress[pyq_idx_key] = p_idx + 1
+            progress_dirty = True
+            pyq_line = f'📝 PYQ: "{entry["q"]}" (UPSC {entry["exam"]} {entry["year"]})'
+            break
+    # if pyq_line is still None here, every subject in the chain was empty -
+    # the PYQ section is simply left out (see pyq_block/post-processing below)
 
 # ---- 1b. Load topic history and prune anything older than HISTORY_DAYS ----
 
@@ -794,7 +846,7 @@ THEME_TAG: <3-6 word summary of today's specific topic/theme>
 This line is for internal tracking only and will be stripped before \
 publishing - it must still be included every time."""
 
-if include_pyq:
+if include_pyq and pyq_line is not None:
     pyq_block = f"""
 
 After the main explanation, add exactly three more short sections, each \
@@ -813,6 +865,24 @@ will be automatically replaced with the correct verified content after \
 generation. Do not write your own PYQ, do not guess a question, do not add \
 commentary around the placeholder - just that exact literal string on its \
 own line, in that position."""
+elif include_pyq and pyq_line is None:
+    # No verified PYQ available anywhere in the bank/nearby chain for this
+    # subject - ask for only two sections, no PYQ line or placeholder at
+    # all, so nothing about a missing PYQ is ever visible in the post.
+    pyq_block = f"""
+
+After the main explanation, add exactly two more short sections, each \
+separated by a blank line:
+📌 Prelims Angle: One crisp, specific fact/data-point/date from this topic \
+phrased the way it would actually appear as a Prelims MCQ statement (e.g. \
+"X is headquartered in Y" or "X Act was passed in YYYY") - one line only.
+🎯 Probable Question ({marks} marks): Write one well-crafted, exam-style \
+probable question worth {marks} marks on today's theme, in authentic UPSC \
+Mains phrasing (e.g. "Discuss...", "Critically examine...", "Analyse...").
+
+Do NOT include a PYQ/previous-year-question section at all this time - go \
+straight from the Prelims Angle to the Probable Question, with nothing in \
+between."""
 else:
     pyq_block = ""
 
