@@ -745,9 +745,7 @@ every individual phrase in it sounds authentic.
 - Widening to a related theme (see below) does NOT lower this bar. \
 "Related" only changes WHICH real question you may pick - it never \
 justifies less certainty about whether the question and its year are \
-genuinely real. Adding a "closely related" explanatory clause does not \
-excuse fabrication; a fabricated question with a justification attached is \
-still fabricated.
+genuinely real.
 - Coaching-institute mock/practice questions, mains-answer-writing-practice \
 prompts, and test-series questions are NOT actual UPSC PYQs even when \
 phrased like one and dated - do not present these as "(UPSC Mains YYYY)". \
@@ -755,20 +753,34 @@ If a question-and-year pairing feels like it could plausibly be a practice \
 question rather than something you've verified as the genuine exam paper, \
 treat it as NOT confident enough to use.
 - If you cannot recall a specific real PYQ on this EXACT angle with that \
-level of confidence, do NOT invent one and do NOT leave the PYQ section \
-empty or placeholder-only. Instead, widen your search: use a real PYQ - \
-one you are equally certain is genuine and correctly dated - on the \
-broader subject area, the same GS paper theme, or a related concept this \
-topic connects to, and add one short clause naming the connection (e.g. \
-"closely related - this PYQ on X tests the same underlying principle").
-- Only if you are genuinely unable to recall ANY real, verifiably-dated PYQ \
-within that wider net - which should be rare - write "📝 PYQ: No \
-closely-matching verified PYQ found - focus on the Probable Question below \
-for practice." This is a last resort, but it is always preferable to a \
-fabricated or uncertain citation.
+level of confidence, silently widen your search before writing anything: \
+consider a real PYQ - one you are equally certain is genuine and \
+correctly dated - on the broader subject area, the same GS paper theme, \
+or a related concept this topic connects to.
 - If you've likely used the single most famous real PYQ on this theme \
-before, choose a different real PYQ on the same or related theme instead, \
-subject to the same confidence bar above.
+before, silently choose a different real PYQ on the same or related theme \
+instead, subject to the same confidence bar above.
+
+CRITICAL OUTPUT FORMAT FOR THIS LINE - read carefully: all of the \
+weighing, searching, and confidence-checking above must happen \
+SILENTLY in your own reasoning and must NEVER appear in the post text \
+itself. The published line must be EXACTLY ONE of these two forms, with \
+nothing else - no alternatives shown, no explanation of why one question \
+was rejected, no "Honest note", no meta-commentary about your own \
+uncertainty, no narrating that a question "is a governance-amendment \
+question" or similar reasoning-out-loud:
+  Form A (you found a confident real PYQ, exact or related theme): \
+"📝 PYQ: [verbatim question text] (UPSC Mains YYYY)" - optionally followed \
+by a short EXAM-FOCUSED clause (not a confidence disclaimer) like \
+"- tests the same underlying principle."
+  Form B (last resort, genuinely nothing found): \
+"📝 PYQ: No closely-matching verified PYQ for this topic - focus on the \
+Probable Question below for practice."
+  Never output both forms, never show a rejected candidate before the \
+final one, and never include phrases like "I cannot verify", "with full \
+confidence", "if uncertain", or any other visible hedging - if you are \
+hedging, you should have used Form B instead of writing the hedge into \
+Form A.
 🎯 Probable Question ({marks} marks): Write one well-crafted, exam-style \
 probable question worth {marks} marks on today's theme, in authentic UPSC \
 Mains phrasing (e.g. "Discuss...", "Critically examine...", "Analyse...")."""
@@ -789,11 +801,18 @@ depth.{history_block}{pyq_block}"""
 
 response = client.messages.create(
     model="claude-sonnet-4-6",
-    max_tokens=700,
+    max_tokens=900,
     temperature=0.3,
     system=system_prompt,
     messages=[{"role": "user", "content": user_prompt}],
 )
+
+if response.stop_reason == "max_tokens":
+    print("ERROR: generation was cut off (hit max_tokens) - refusing to post "
+          "truncated content. Increase max_tokens or shorten the prompt.")
+    print("---")
+    print(response.content[0].text.strip())
+    sys.exit(1)
 
 raw_text = response.content[0].text.strip()
 
