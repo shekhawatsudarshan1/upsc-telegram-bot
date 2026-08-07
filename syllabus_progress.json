@@ -2,7 +2,7 @@
   "Scheme Spotlight": 16,
   "IR Byte": 32,
   "Ethics & Motivation": 1,
-  "Polity Byte": 38,
+  "Polity Byte": 39,
   "History Byte": 31,
   "Geography Byte": 30,
   "Economy Byte": 32,
@@ -16,5 +16,6 @@
   "Quick Quiz::Environment Byte": 2,
   "Quick Quiz::Science & Tech Byte": 2,
   "Quick Quiz::IR Byte": 1,
-  "Quick Quiz::Ethics & Motivation": 1
+  "Quick Quiz::Ethics & Motivation": 1,
+  "Polity Byte_pyq_idx": 1
 }
