@@ -491,6 +491,52 @@ QUIZ_SUBJECT_ROTATION = [
     "Ethics & Motivation",
 ]
 
+# ---------------------------------------------------------------------------
+# PYQ_BANK - hand-verified real UPSC previous-year questions, keyed by
+# subject_key (the same strings used above). This exists because asking
+# Claude to RECALL a specific real PYQ from memory turned out to be
+# unreliable no matter how the prompt was worded - wrong years, wrong exam
+# type (Prelims vs Mains), reconstructed/blended wording, and even mock
+# questions from coaching sites being mistaken for genuine ones. The fix is
+# structural, not another prompt tweak: stop asking the model to generate
+# the PYQ citation at all. Instead, pick a real, pre-verified one from this
+# list in code and insert it verbatim - the model never touches this text.
+#
+# Each entry: {"q": "<verbatim question text>", "exam": "Mains" or
+# "Prelims", "year": <int>}. ONLY add an entry here if you have personally
+# verified it against an official/reliable source (e.g. the actual UPSC
+# previous-year paper PDFs at upsc.gov.in, or a source you trust) - a wrong
+# entry here is worse than an empty list, since it will be posted with full
+# confidence every time it's selected. If a subject's list is empty, the
+# bot automatically falls back to an honest "no verified PYQ yet" line
+# instead of guessing - that's intentional and safe.
+#
+# This starter list intentionally has very few entries. Expand it over time
+# by editing this file directly (same complete-file-replacement workflow
+# you've been using) and pasting in real, verified questions.
+PYQ_BANK = {
+    "Polity Byte": [
+        {
+            "q": "How is the Finance Commission of India constituted? What "
+                 "do you know about the terms of reference of the recently "
+                 "constituted Finance Commission? Discuss.",
+            "exam": "Mains",
+            "year": 2018,
+        },
+    ],
+    "History Byte": [],
+    "Geography Byte": [],
+    "Economy Byte": [],
+    "Environment Byte": [],
+    "Current Affairs Byte": [],
+    "Editorial Byte": [],
+    "Science & Tech Byte": [],
+    "Scheme Spotlight": [],
+    "IR Byte": [],
+    "Ethics & Motivation": [],
+    "Daily Revision": [],
+}
+
 if hour not in SCHEDULE:
     if os.environ.get("FORCE_TEST") == "true":
         hour = 7
@@ -567,6 +613,27 @@ elif subject_key == "Quick Quiz":
         f"format, or current-affairs hook where relevant rather than the "
         f"most obvious textbook framing of it."
     )
+
+# ---- 1c. Pick today's PYQ (if this slot uses one) from the verified bank -
+#          instead of asking Claude to recall one. Rotates through the
+#          bank's entries for this subject so repeats aren't shown before
+#          the list has been fully cycled. If the bank has no entries yet
+#          for this subject, falls back to an honest static line - never a
+#          guess.
+
+pyq_line = None
+if hour in MARKS:
+    bank_list = PYQ_BANK.get(subject_key, [])
+    if bank_list:
+        pyq_idx_key = f"{subject_key}_pyq_idx"
+        p_idx = syllabus_progress.get(pyq_idx_key, 0) % len(bank_list)
+        entry = bank_list[p_idx]
+        syllabus_progress[pyq_idx_key] = p_idx + 1
+        progress_dirty = True
+        pyq_line = f'📝 PYQ: "{entry["q"]}" (UPSC {entry["exam"]} {entry["year"]})'
+    else:
+        pyq_line = ("📝 PYQ: No verified PYQ in the bank yet for this topic "
+                     "- focus on the Probable Question below for practice.")
 
 # ---- 1b. Load topic history and prune anything older than HISTORY_DAYS ----
 
@@ -727,63 +794,27 @@ THEME_TAG: <3-6 word summary of today's specific topic/theme>
 This line is for internal tracking only and will be stripped before \
 publishing - it must still be included every time."""
 
-pyq_block = f"""
+if include_pyq:
+    pyq_block = f"""
 
 After the main explanation, add exactly three more short sections, each \
 separated by a blank line:
 📌 Prelims Angle: One crisp, specific fact/data-point/date from this topic \
 phrased the way it would actually appear as a Prelims MCQ statement (e.g. \
 "X is headquartered in Y" or "X Act was passed in YYYY") - one line only.
-📝 PYQ: Include one REAL UPSC Mains previous year question, and ALWAYS \
-state the year explicitly in the format (UPSC Mains YYYY).
-- Only use a PYQ whose exact wording AND year you can recall with genuine \
-confidence, as a single question you have seen verbatim - never construct, \
-paraphrase-then-reattribute, blend, or reconstruct a question from \
-fragments of different real questions or from a topic summary. A \
-part-remembered question presented as verbatim is a fabrication, even if \
-every individual phrase in it sounds authentic.
-- Widening to a related theme (see below) does NOT lower this bar. \
-"Related" only changes WHICH real question you may pick - it never \
-justifies less certainty about whether the question and its year are \
-genuinely real.
-- Coaching-institute mock/practice questions, mains-answer-writing-practice \
-prompts, and test-series questions are NOT actual UPSC PYQs even when \
-phrased like one and dated - do not present these as "(UPSC Mains YYYY)". \
-If a question-and-year pairing feels like it could plausibly be a practice \
-question rather than something you've verified as the genuine exam paper, \
-treat it as NOT confident enough to use.
-- If you cannot recall a specific real PYQ on this EXACT angle with that \
-level of confidence, silently widen your search before writing anything: \
-consider a real PYQ - one you are equally certain is genuine and \
-correctly dated - on the broader subject area, the same GS paper theme, \
-or a related concept this topic connects to.
-- If you've likely used the single most famous real PYQ on this theme \
-before, silently choose a different real PYQ on the same or related theme \
-instead, subject to the same confidence bar above.
-
-CRITICAL OUTPUT FORMAT FOR THIS LINE - read carefully: all of the \
-weighing, searching, and confidence-checking above must happen \
-SILENTLY in your own reasoning and must NEVER appear in the post text \
-itself. The published line must be EXACTLY ONE of these two forms, with \
-nothing else - no alternatives shown, no explanation of why one question \
-was rejected, no "Honest note", no meta-commentary about your own \
-uncertainty, no narrating that a question "is a governance-amendment \
-question" or similar reasoning-out-loud:
-  Form A (you found a confident real PYQ, exact or related theme): \
-"📝 PYQ: [verbatim question text] (UPSC Mains YYYY)" - optionally followed \
-by a short EXAM-FOCUSED clause (not a confidence disclaimer) like \
-"- tests the same underlying principle."
-  Form B (last resort, genuinely nothing found): \
-"📝 PYQ: No closely-matching verified PYQ for this topic - focus on the \
-Probable Question below for practice."
-  Never output both forms, never show a rejected candidate before the \
-final one, and never include phrases like "I cannot verify", "with full \
-confidence", "if uncertain", or any other visible hedging - if you are \
-hedging, you should have used Form B instead of writing the hedge into \
-Form A.
+{{PYQ_PLACEHOLDER}}
 🎯 Probable Question ({marks} marks): Write one well-crafted, exam-style \
 probable question worth {marks} marks on today's theme, in authentic UPSC \
-Mains phrasing (e.g. "Discuss...", "Critically examine...", "Analyse...")."""
+Mains phrasing (e.g. "Discuss...", "Critically examine...", "Analyse...").
+
+For the PYQ section: output the literal text "{{PYQ_PLACEHOLDER}}" exactly \
+as shown, on its own line, with nothing added, removed, or reworded - it \
+will be automatically replaced with the correct verified content after \
+generation. Do not write your own PYQ, do not guess a question, do not add \
+commentary around the placeholder - just that exact literal string on its \
+own line, in that position."""
+else:
+    pyq_block = ""
 
 user_prompt = f"""Today is {today_str}. Write today's {now_ist.strftime('%I %p')} \
 Telegram post for UPSC aspirants.
@@ -827,6 +858,22 @@ while lines and not lines[-1].strip():
     lines.pop()
 
 post_text = "\n".join(lines).strip()
+
+# Swap the placeholder for the real, verified PYQ line (or honest fallback)
+# selected in code earlier - the model never generates this content itself.
+if pyq_line is not None:
+    if "{PYQ_PLACEHOLDER}" in post_text:
+        post_text = post_text.replace("{PYQ_PLACEHOLDER}", pyq_line)
+    else:
+        # Safety net: if the model dropped/mangled the placeholder, insert
+        # the verified line before the Probable Question section instead of
+        # silently losing it.
+        marker = "🎯 Probable Question"
+        if marker in post_text:
+            post_text = post_text.replace(marker, f"{pyq_line}\n\n{marker}", 1)
+        else:
+            post_text = f"{post_text}\n\n{pyq_line}"
+
 post_text = f"{post_text}\n\n— @ApexCivica"
 
 # ---- 3. Send to Telegram --------------------------------------------------
