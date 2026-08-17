@@ -3322,5 +3322,11 @@
     "hour": 10,
     "subject": "Economy Byte",
     "theme": "GDP GNP NDP NNP NFIA India"
+  },
+  {
+    "date": "2026-08-17",
+    "hour": 11,
+    "subject": "Environment Byte",
+    "theme": "Project Elephant governance statutory gap"
   }
 ]
