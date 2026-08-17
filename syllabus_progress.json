@@ -3,7 +3,7 @@
   "IR Byte": 3,
   "Ethics & Motivation": 11,
   "Polity Byte": 49,
-  "History Byte": 41,
+  "History Byte": 42,
   "Geography Byte": 40,
   "Economy Byte": 42,
   "Environment Byte": 7,
@@ -18,5 +18,5 @@
   "Quick Quiz::IR Byte": 3,
   "Quick Quiz::Ethics & Motivation": 3,
   "Polity Byte_pyq_idx": 1,
-  "History Byte_pyq_idx": 4
+  "History Byte_pyq_idx": 5
 }
