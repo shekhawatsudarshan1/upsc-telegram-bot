@@ -903,7 +903,6 @@ depth.{history_block}{pyq_block}"""
 response = client.messages.create(
     model="claude-sonnet-4-6",
     max_tokens=900,
-    temperature=0.3,
     system=system_prompt,
     messages=[{"role": "user", "content": user_prompt}],
 )
