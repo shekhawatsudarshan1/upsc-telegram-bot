@@ -3952,5 +3952,11 @@
     "hour": 11,
     "subject": "Environment Byte",
     "theme": "Stubble burning PM2.5 source apportionment"
+  },
+  {
+    "date": "2026-08-25",
+    "hour": 12,
+    "subject": "Editorial Byte",
+    "theme": "ICDS nutrition measurement governance gap"
   }
 ]
