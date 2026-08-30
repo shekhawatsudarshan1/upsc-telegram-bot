@@ -4330,5 +4330,11 @@
     "hour": 9,
     "subject": "Geography Byte",
     "theme": "IOD ENSO monsoon modulation India"
+  },
+  {
+    "date": "2026-08-30",
+    "hour": 10,
+    "subject": "Economy Byte",
+    "theme": "CPI WPI divergence inflation measurement RBI targeting"
   }
 ]
