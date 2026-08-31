@@ -24,7 +24,7 @@ SYLLABUS_PROGRESS_FILE = "syllabus_progress.json"
 
 IST = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
 now_ist = datetime.datetime.now(IST)
-hour = now_ist.hour
+now_hour = now_ist.hour
 today_str = now_ist.strftime("%A, %d %B %Y")
 
 SCHEDULE = {
@@ -587,24 +587,49 @@ NEARBY_SUBJECTS = {
     "Daily Revision": ["Polity Byte", "History Byte"],
 }
 
-if hour not in SCHEDULE:
+POST_HOURS = [8, 11, 14, 17]  # fixed real-world posting times (IST), 4x/day
+ROTATION_ORDER = list(TITLE_NAMES.keys())  # all 13 subject/format slots -
+# rotates across DAYS now, 4 consumed per day, wrapping once fully covered.
+# Not tied to which of the 4 daily times it is; a global counter just
+# advances by 1 on every successful post, so every subject still gets
+# covered on a regular cycle even though only 4 slots run per day.
+
+# Load syllabus_progress early - the rotation index below lives in this
+# same file, so it needs to be available before we pick today's subject.
+if os.path.exists(SYLLABUS_PROGRESS_FILE):
+    with open(SYLLABUS_PROGRESS_FILE, "r", encoding="utf-8") as f:
+        try:
+            syllabus_progress = json.load(f)
+        except json.JSONDecodeError:
+            syllabus_progress = {}
+else:
+    syllabus_progress = {}
+progress_dirty = False
+
+if now_hour not in POST_HOURS:
     if os.environ.get("FORCE_TEST") == "true":
-        hour = 7
+        hour = 7  # Polity - fixed, deterministic subject for manual test posts
         topic_instruction = SCHEDULE[hour]
         print(f"FORCE_TEST enabled - ignoring schedule, using hour {hour} topic for a test post.")
     else:
-        print(f"Hour {hour} IST is outside the posting schedule (6-18). Exiting.")
+        print(f"{now_hour}:00 IST is not one of the 4 daily posting times "
+              f"{POST_HOURS} - exiting.")
         sys.exit(0)
 else:
+    rot_idx = syllabus_progress.get("post_rotation_idx", 0) % len(ROTATION_ORDER)
+    hour = ROTATION_ORDER[rot_idx]
+    syllabus_progress["post_rotation_idx"] = rot_idx + 1
+    progress_dirty = True
     topic_instruction = SCHEDULE[hour]
+    print(f"Posting at {now_hour}:00 IST - rotation slot {rot_idx} -> "
+          f"{TITLE_NAMES[hour]}")
 
 include_pyq = hour in MARKS
 marks = MARKS.get(hour)
 gs_paper = GS_PAPERS[hour]
 
-# Build the time-stamped title, e.g. "📰 6 AM Current Affairs Byte".
-# strftime('%I') gives a zero-padded hour (e.g. "06"); strip the leading
-# zero so it reads "6 AM" not "06 AM".
+# Build the time-stamped title, e.g. "📰 8 AM Current Affairs Byte" - the
+# REAL clock time, even though the subject itself came from the rotation.
 time_str = now_ist.strftime("%I %p").lstrip("0")
 name_parts = TITLE_NAMES[hour].split(" ", 1)  # [emoji, "rest of name"]
 icon, rest_of_name = name_parts[0], name_parts[1]
@@ -614,19 +639,9 @@ subject_key = rest_of_name  # e.g. "Polity Byte" - used to scope history lookups
 # ---- 1b. Syllabus checklist - systematically cycle through the full ------
 #          syllabus for this subject, one item per day, looping once done.
 
-if os.path.exists(SYLLABUS_PROGRESS_FILE):
-    with open(SYLLABUS_PROGRESS_FILE, "r", encoding="utf-8") as f:
-        try:
-            syllabus_progress = json.load(f)
-        except json.JSONDecodeError:
-            syllabus_progress = {}
-else:
-    syllabus_progress = {}
-
 syllabus_unit = None
 quiz_subject = None
 checklist = SYLLABUS_CHECKLISTS.get(subject_key)
-progress_dirty = False
 
 if checklist:
     idx = syllabus_progress.get(subject_key, 0) % len(checklist)
