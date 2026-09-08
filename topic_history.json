@@ -4606,5 +4606,11 @@
     "hour": 10,
     "subject": "Economy Byte",
     "theme": "SEBI T+0 settlement capital markets regulation"
+  },
+  {
+    "date": "2026-09-08",
+    "hour": 11,
+    "subject": "Environment Byte",
+    "theme": "CBD CITES treaty mechanisms governance gaps"
   }
 ]
