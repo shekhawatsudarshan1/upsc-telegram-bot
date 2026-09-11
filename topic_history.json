@@ -4684,5 +4684,11 @@
     "hour": 10,
     "subject": "Economy Byte",
     "theme": "BoP financing mix capital account composition"
+  },
+  {
+    "date": "2026-09-11",
+    "hour": 11,
+    "subject": "Environment Byte",
+    "theme": "Solar expansion ecological land-use biodiversity trade-offs"
   }
 ]
