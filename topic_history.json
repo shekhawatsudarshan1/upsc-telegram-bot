@@ -4990,5 +4990,11 @@
     "hour": 9,
     "subject": "Geography Byte",
     "theme": "Location factors industry types Weber Christaller"
+  },
+  {
+    "date": "2026-09-24",
+    "hour": 10,
+    "subject": "Economy Byte",
+    "theme": "Unemployment types PLFS measurement gaps"
   }
 ]
