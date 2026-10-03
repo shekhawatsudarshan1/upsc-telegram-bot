@@ -4,7 +4,7 @@
   "Ethics & Motivation": 4,
   "Polity Byte": 8,
   "History Byte": 15,
-  "Geography Byte": 24,
+  "Geography Byte": 25,
   "Economy Byte": 25,
   "Environment Byte": 32,
   "Science & Tech Byte": 30,
@@ -19,5 +19,5 @@
   "Quick Quiz::Ethics & Motivation": 6,
   "Polity Byte_pyq_idx": 1,
   "History Byte_pyq_idx": 5,
-  "post_rotation_idx": 3
+  "post_rotation_idx": 4
 }
