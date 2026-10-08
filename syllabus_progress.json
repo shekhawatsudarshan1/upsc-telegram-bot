@@ -7,7 +7,7 @@
   "Geography Byte": 26,
   "Economy Byte": 27,
   "Environment Byte": 34,
-  "Science & Tech Byte": 31,
+  "Science & Tech Byte": 32,
   "Quick Quiz_subject_idx": 1,
   "Quick Quiz::Polity Byte": 7,
   "Quick Quiz::History Byte": 6,
@@ -19,5 +19,5 @@
   "Quick Quiz::Ethics & Motivation": 6,
   "Polity Byte_pyq_idx": 1,
   "History Byte_pyq_idx": 1,
-  "post_rotation_idx": 7
+  "post_rotation_idx": 8
 }
