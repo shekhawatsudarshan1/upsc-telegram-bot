@@ -1,7 +1,7 @@
 {
   "Scheme Spotlight": 16,
   "IR Byte": 35,
-  "Ethics & Motivation": 11,
+  "Ethics & Motivation": 12,
   "Polity Byte": 15,
   "History Byte": 22,
   "Geography Byte": 32,
@@ -19,5 +19,5 @@
   "Quick Quiz::Ethics & Motivation": 6,
   "Polity Byte_pyq_idx": 1,
   "History Byte_pyq_idx": 2,
-  "post_rotation_idx": 10
+  "post_rotation_idx": 11
 }
